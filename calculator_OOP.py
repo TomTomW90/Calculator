@@ -1,45 +1,53 @@
 class Calc:
-    def __init__(self, action):
-        self.a = 0
-        self.b = 0
-        self.action = action
+    def __init__(self):
+        self.numbers = []
+        self.action = " "
         self.symbol = " "
 
-    def get_num_a(self):
-        a = float(input("Give num a: "))
-        self.a = a
-        print(self.a)
-        return self.a
-
-    def get_num_b(self):
-        b = float(input("Give num b: "))
-        self.b = b
-        print(self.b)
-        return self.b
+    def get_number(self):
+        number = float(input("Give number: "))
+        self.numbers.append(number)
+        print(self.numbers)
+        return self.numbers
 
     def addition(self):
-        total = self.a + self.b
-        print(total)
-        return total
+        temp = 0
+        for n in self.numbers:
+            temp += n
+        print(temp)
+        self.numbers = []
+        self.numbers.append(temp)
+        return temp
 
     def subtraction(self):
-        total = self.a - self.b
-        print(total)
-        return total
+        temp = 0
+        for n in self.numbers:
+            temp -= n
+        print(temp)
+        self.numbers = []
+        self.numbers.append(temp)
+        return temp
 
     def multiplication(self):
-        total = self.a * self.b
-        print(total)
-        return total
+        temp = 1
+        for n in self.numbers:
+            temp *= n
+        print(temp)
+        self.numbers = []
+        self.numbers.append(temp)
+        return temp
 
     def division(self):
-        total = self.a / self.b
-        print(total)
-        return total
+        temp = 0
+        for n in self.numbers:
+            temp /= n
+        print(temp)
+        self.numbers = []
+        self.numbers.append(temp)
+        return temp
 
     def clear(self):
-        self.a = 0
-        self.b = 0
+        self.numbers = []
         self.symbol = " "
         print("All cleared")
 
@@ -48,10 +56,8 @@ class Calc:
         quit()
 
     def decision(self):
-        if self.action == 'a':
-            return Calc.get_num_a(self)
-        elif self.action == 'b':
-            return Calc.get_num_b(self)
+        if self.action == 'n':
+            return Calc.get_number(self)
         elif self.action == 'c':
             return Calc.clear(self)
         elif self.action == 'x':
@@ -71,11 +77,11 @@ class Calc:
         elif self.symbol == '/':
             return Calc.division(self)
         else:
-            print("You need to specify two numbers.")
+            print("Invalid form of expression")
 
 
-app = Calc(' ')
+app = Calc()
 
 while app.action != 'x':
-    app.action = str(input('Type "a" to input num a, "b" to input num b, "+" to add, "-" to subtract, "*" to multiply, "/" to divide, "c" to clear content, "x" to exit. :'))
+    app.action = str(input('Type "n" to input number, "+" to add, "-" to subtract, "*" to multiply, "/" to divide, "=" to calculate, "c" to clear content, "x" to exit. :'))
     app.decision()
