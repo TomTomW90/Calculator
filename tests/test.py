@@ -4,11 +4,11 @@ import calculator_OOP as c
 
 class TestCalc(unittest.TestCase):
 
+    def setUp(self):
+        self.temp = c.Calc.addition([5, 10])
+
     def test_addition(self):
-        data = c.Calc
-        data.numbers = [5, 10]
-        result = data.addition()
-        self.assertEqual(result, 15)
+        self.assertEqual(self.temp, 15)
 
 
 if __name__ == '__main__':
