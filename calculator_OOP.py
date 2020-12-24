@@ -1,87 +1,131 @@
-class Calc:
+class UserInput:
+
     def __init__(self):
-        self.numbers = []
-        self.action = " "
-        self.symbol = " "
+        self._value = None
+        self._action = None
+        self._numbers = []
+        self._run = False
 
-    def get_number(self):
-        number = float(input("Give number: "))
-        self.numbers.append(number)
-        print(self.numbers)
-        return self.numbers
+    @property
+    def action(self):
+        return self._action
 
-    def addition(self):
-        temp = 0
-        for n in self.numbers:
-            temp += n
-        print(temp)
-        self.numbers = []
-        self.numbers.append(temp)
-        return temp
+    @action.setter
+    def action(self, symbol):
+        self._action = symbol
 
-    def subtraction(self):
-        temp = 0
-        for n in self.numbers:
-            temp -= n
-        print(temp)
-        self.numbers = []
-        self.numbers.append(temp)
-        return temp
+    @property
+    def numbers(self):
+        return self._numbers
 
-    def multiplication(self):
-        temp = 1
-        for n in self.numbers:
-            temp *= n
-        print(temp)
-        self.numbers = []
-        self.numbers.append(temp)
-        return temp
+    @numbers.setter
+    def numbers(self, empty_list):
+        self._numbers = empty_list
 
-    def division(self):
-        temp = 0
-        for n in self.numbers:
-            temp /= n
-        print(temp)
-        self.numbers = []
-        self.numbers.append(temp)
-        return temp
+    @property
+    def run(self):
+        return self._run
 
-    def clear(self):
-        self.numbers = []
-        self.symbol = " "
-        print("All cleared")
+    @run.setter
+    def run(self, true_or_false):
+        self._run = true_or_false
 
-    def exit_program(self):
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        if value == 'x':
+            CalcFunc.exit_program()
+        if value == '=':
+            self._run = True
+        elif value not in ['+', '-', '*', '/', 'c', None]:
+            try:
+                value = float(value)
+                self._numbers.append(value)
+            except ValueError:
+                print("Wrong input data")
+        else:
+            self._action = value
+        self._value = value
+
+
+class CalcFunc:
+
+    @staticmethod
+    def exit_program() -> object:
         print("Program closed")
-        quit()
+        return quit()
 
-    def decision(self):
-        if self.action == 'n':
-            return Calc.get_number(self)
-        elif self.action == 'c':
-            return Calc.clear(self)
-        elif self.action == 'x':
-            return Calc.exit_program(self)
-        elif self.action == '=':
-            return Calc.do_math(self)
-        else:
-            self.symbol = self.action
+    @classmethod
+    def addition(cls, numbers):
+        total = numbers[0]
+        for number in numbers[1:]:
+            total += number
+        return total
 
-    def do_math(self):
-        if self.symbol == '+':
-            return Calc.addition(self)
-        elif self.symbol == '-':
-            return Calc.subtraction(self)
-        elif self.symbol == '*':
-            return Calc.multiplication(self)
-        elif self.symbol == '/':
-            return Calc.division(self)
-        else:
-            print("Invalid form of expression")
+    @classmethod
+    def subtraction(cls, numbers):
+        total = numbers[0]
+        for number in numbers[1:]:
+            total -= number
+        return total
+
+    @classmethod
+    def multiplication(cls, numbers):
+        total = 1
+        for number in numbers:
+            total *= number
+        return total
+
+    @classmethod
+    def division(cls, numbers):
+        total = numbers[0]
+        try:
+            for number in numbers[1:]:
+                total /= number
+            return total
+        except ZeroDivisionError:
+            print("You can't divide by zero!")
 
 
-app = Calc()
+class Calculator:
 
-while app.action != 'x':
-    app.action = str(input('Type "n" to input number, "+" to add, "-" to subtract, "*" to multiply, "/" to divide, "=" to calculate, "c" to clear content, "x" to exit. :'))
-    app.decision()
+    def __init__(self, terminal_input: UserInput):
+        self._terminal_input = terminal_input
+
+    def choose_calc_func(self):
+        if self._terminal_input.action == '+':
+            return CalcFunc.addition(self._terminal_input.numbers)
+        elif self._terminal_input.action == '-':
+            return CalcFunc.subtraction(self._terminal_input.numbers)
+        elif self._terminal_input.action == '*':
+            return CalcFunc.multiplication(self._terminal_input.numbers)
+        elif self._terminal_input.action == '/':
+            return CalcFunc.division(self._terminal_input.numbers)
+
+    def clear_variables(self):
+        self._terminal_input.value = None
+        self._terminal_input.action = None
+        del self._terminal_input.numbers[:-1]
+        self._terminal_input.run = False
+
+    def clear_all(self):
+        self._terminal_input.value = None
+        self._terminal_input.action = None
+        self._terminal_input.numbers = []
+        self._terminal_input.run = False
+
+
+ui = UserInput()
+my_calculator = Calculator(ui)
+
+while ui.value != 'x':
+    ui.value = input("Get input: ")
+    if ui.run:
+        print("Result: ", my_calculator.choose_calc_func())
+        ui.numbers.append(my_calculator.choose_calc_func())
+        my_calculator.clear_variables()
+    if ui.value == 'c':
+        my_calculator.clear_all()
