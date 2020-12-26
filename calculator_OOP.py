@@ -112,14 +112,13 @@ class Calculator:
         self._terminal_input.run = False
 
     def clear_all(self):
-        self._terminal_input.value = None
-        self._terminal_input.action = None
+        self.clear_variables()
         self._terminal_input.numbers = []
-        self._terminal_input.run = False
 
 
 ui = UserInput()
 my_calculator = Calculator(ui)
+print("Use calculator by writing to the terminal commends: '+', '-', '*', '/', 'c', '=' or numbers.")
 
 while ui.value != 'x':
     ui.value = input("Get input: ")
